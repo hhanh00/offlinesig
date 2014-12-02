@@ -12,14 +12,15 @@ OfflineSig accepts several commands. The first argument is always the name of th
 Other currencies can easily be added but I don't have any of them to test with.
 
 ## seed
-Create a new wallet and return the master mnemonic words
+Create a new wallet and return the master mnemonic words. The currency is ignored but required for consistency with the other commands.
 ```
 bin\offlinesig BTC seed
 
 Entropy seed = 01d89da8983ee15d01668b9dfb429a54
 achieve shaft health corn unlock purse airport sphere over sure pledge practice
 ```
-The entropy seed and the mnemonic words are equivalent. Passing the entropy seed as a parameter outputs the mnemonic words again.
+The entropy seed and the mnemonic words are equivalent. Passing the entropy seed as a parameter outputs the mnemonic words again. This 
+lets you use an external source of entropy if you prefer.
 
 ```
 bin\offlinesig BTC seed 01d89da8983ee15d01668b9dfb429a54
@@ -28,7 +29,7 @@ Entropy seed = 01d89da8983ee15d01668b9dfb429a54
 achieve shaft health corn unlock purse airport sphere over sure pledge practice
 ```
 
-Save the mnemonic words in a file (not the entropy hex). We'll call it the *seed-file*
+Save the mnemonic words in a file (not the entropy hex). We'll call it the *seed-file*. There is only one seed file for all the currencies.
 
 ## mpk
 Prints out the master watch-only key.
@@ -139,6 +140,8 @@ bin\offlinesig BTC make tx.txt sig.txt
 01000000016d213a65f3dc6ea02b98d098490a4e0867cd13105f28af21b8be8f8347eeee3f000000006a47304402202252ec1feb9d0f6fc3a64d7306896fc4bf2fa152f414017ec5f8ba05e2dd1c5e02203c3471b47a79bd4b86f8520d943cf2e193a6440320cc45b3b1164e151e446ee2012103ebf26082853c8268f1a6f352da503a03e04c82fa6e20d6b0ad1b71a8e2537a05ffffffff0150c30000000000001976a914722cfae7f31483be6cb35c2ce81dd803bc2b451888ac00000000
 ```
 
+**Double check / triple check your transaction now. In particular, make sure that you are sending to an address of your wallet and
+that you didn't forget to include a change address. The next step is irreversible**
 Now you can push that transaction to the network. [Blockchain.info PushTX]
 
 # Files
