@@ -30,14 +30,16 @@ Prints out the master watch-only key.
 ```
 bin\offlinesig mpk seed.txt
 
-{"pub":"0360f06d1602c9c98805b3d6a15ca28d43052a9391d0a6c685714eab95a5819180","chain":"7bcaded5bd50a4ef33d720e59c458f2a6d328574c16586f3c0820b25a118c735"}```
+{"pub":"0360f06d1602c9c98805b3d6a15ca28d43052a9391d0a6c685714eab95a5819180","chain":"7bcaded5bd50a4ef33d720e59c458f2a6d328574c16586f3c0820b25a118c735"}
+```
 
 If you want to add a password, you can add it as the second argument.
 
 ```
 bin\offlinesig mpk seed.txt password
 
-{"pub":"02382ec8ede725a39612bd5bb0a7d84e161e8df462b77c60dc7852cd30ddccd90c","chain":"52679b46169413f63eb5134a5247961ff7afae0172ee47a9d814d070e7fc7fb8"}```
+{"pub":"02382ec8ede725a39612bd5bb0a7d84e161e8df462b77c60dc7852cd30ddccd90c","chain":"52679b46169413f63eb5134a5247961ff7afae0172ee47a9d814d070e7fc7fb8"}
+```
 
 **Important Note: If you add a password, it will change the addresses generated. Therefore if you don't specify the right password, you will not be able to sign. In other words, there is no way to recover the password. IT IS NOT PART OF THE SEED.**
 
@@ -56,7 +58,8 @@ bin\offlinesig receive mpk.txt 5
 1NS8o84E7u7p9KF7aUhGLaRkJFX7joU4ZH
 18vyDx8BsFWYa1S47kn6JNpP6Uo3ChbM2p
 152VddzjkffeYFZhqvJbGas7ZVWAqK3xVc
-1KRhojk2hrpP8cfVAjW3Mg4zRLrbEsRcEC```
+1KRhojk2hrpP8cfVAjW3Mg4zRLrbEsRcEC
+```
 
 ## change
 Generate change addresses
@@ -68,7 +71,8 @@ bin\offlinesig change mpk.txt 5
 1MpZF7BtC1KWpDrBZCawgRivnW9Xd3uQy3
 1HiDjpax5P4LePfEyqTYkds8cqUdscSWR9
 1HPim3sxkxRjoBCqEXLLvVpzDy98fq7rc
-13FnH9riHZJkpewc1hRon8BQT1bnQVhTjx```
+13FnH9riHZJkpewc1hRon8BQT1bnQVhTjx
+```
 
 ## prepare
 Prepare a transaction for signing.
@@ -100,7 +104,8 @@ The output values are in Satoshis. There are 100 000 Satoshis per mBTC.
 ```
 bin\offlinesig prepare tx.txt
 
-[{"pub":"5b091792e7a62ec1ab4e5de81573bee3f4076e96","hash":"6caa472a75537399540a07fa16200fdc882e73cd60efba5dbdf3fe5ab32377fc"}]```
+[{"pub":"5b091792e7a62ec1ab4e5de81573bee3f4076e96","hash":"6caa472a75537399540a07fa16200fdc882e73cd60efba5dbdf3fe5ab32377fc"}]
+```
 
 This computes the transaction hash that should be signed. Save this to a file. We'll call it the *unsig-file*.
 
