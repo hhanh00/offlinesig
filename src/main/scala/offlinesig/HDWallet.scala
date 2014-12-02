@@ -97,7 +97,7 @@ object BIP32 {
 }
 
 object Bitcoin {
-  val addressPrefix = 0x00.toByte
+  // val addressPrefix = 0x00.toByte
   type Hash = Array[Byte]
   type Script = Array[Byte]
   val ecSpec = ECNamedCurveTable.getParameterSpec("secp256k1")
@@ -141,11 +141,11 @@ object Bitcoin {
     Base58.encode(addressBin)
   }
 
-  def fromAddressToHash(address: String): Bitcoin.Hash = {
+  def fromAddressToHash(address: String)(implicit coin: Coin): Bitcoin.Hash = {
     val h = Base58.decode(address)
     val hash = ArrayUtils.subarray(h, 1, 21)
-    val recomputedAddress = toAddressFromHash(hash, Bitcoin.addressPrefix)
-    if (recomputedAddress != address)
+    val recomputedAddress = toAddressFromHash(hash, coin.prefix)
+    if (coin.prefix != h(0) || recomputedAddress != address)
       throw new RuntimeException("Invalid address")
     hash
   }
