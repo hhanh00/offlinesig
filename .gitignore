@@ -1,0 +1,7 @@
+.cache
+.classpath
+bin/
+target/
+notes.txt
+console.log
+.idea/
