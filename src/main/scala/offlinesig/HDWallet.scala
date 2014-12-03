@@ -201,31 +201,3 @@ class PublicKeyExt(val point: ECPoint, val chain: Array[Byte]) {
     }
   }
 }
-
-trait WalletAddress {
-  val point: ECPoint
-}
-
-trait Wallet {
-  val receiveAddresses: Iterator[WalletAddress]
-  val changeAddresses: Iterator[WalletAddress]
-}
-
-class BIP32Address(val pubkeyExt: PublicKeyExt) extends WalletAddress {
-  val point = pubkeyExt.point
-}
-
-class BIP32AddressIterator(parent: PublicKeyExt) extends Iterator[BIP32Address] {
-  var i = 0
-  def hasNext = true
-  def next(): BIP32Address = { 
-    val child = parent.toPublicChild(i)
-    i += 1
-    new BIP32Address(child.get)
-  }
-}
-
-class BIP32(masterPubKey: BIP32Address) extends Wallet {
-  val receiveAddresses = new BIP32AddressIterator(masterPubKey.pubkeyExt.toPublicChild(0).get)
-  val changeAddresses = new BIP32AddressIterator(masterPubKey.pubkeyExt.toPublicChild(1).get)
-}

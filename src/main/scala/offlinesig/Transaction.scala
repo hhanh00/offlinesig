@@ -127,16 +127,6 @@ class UnsignedTx(version: Int, lockTime: Int, inputs: Iterable[SigOutPoint], out
     }
   }
 }
-object UnsignedTx {
-  def sign(pub: ECPoint, secret: BigInt, hash: Bitcoin.Hash) = {
-    val signer = new ECDSASigner
-
-    val params = new ECPrivateKeyParameters(secret.bigInteger, Bitcoin.ecDomain)
-    signer.init(true, params)
-    val sig = signer.generateSignature(hash)
-    Signature(pub, BigInt(sig(0)), BigInt(sig(1)))
-  }
-}
 
 case class OutPoint(hash: Bitcoin.Hash, index: Int) extends ToByteArray {
   override def toString() = s"OutPoint(${Message.hashToString(hash)}, $index)"

@@ -50,7 +50,7 @@ class Main(coin: Coin) {
     Signature(pub, BigInt(sig(0)), BigInt(sig(1)))
   }
 
-  def toBitcoinLeaf(priv: PrivKeyExt) = priv.toPrivChild(0x8000002C).toPrivChild(0x80000000 + coin.prefix).toPrivChild(0x80000000)
+  def toCoinLeaf(priv: PrivKeyExt) = priv.toPrivChild(0x8000002C).toPrivChild(0x80000000 + coin.prefix).toPrivChild(0x80000000)
   def getMasterKey(seedFile: String, passphrase: String) = {
     val mnemonic = Source.fromFile(seedFile).getLines().mkString
     val entropy = Mnemonic.fromMnemonic(mnemonic.split(" "))
@@ -72,7 +72,7 @@ class Main(coin: Coin) {
 
   def showMpk(seedFile: String, passphrase: String) = {
     val priv = getMasterKey(seedFile, passphrase)
-    val mpk = toBitcoinLeaf(priv)
+    val mpk = toCoinLeaf(priv)
     val mppk = mpk.toPublic()
     val mppkJson = ("pub" -> Hex.toHexString(BIP32.getCompressed(mppk.point))) ~
     ("chain" -> Hex.toHexString(mppk.chain))
@@ -130,7 +130,7 @@ class Main(coin: Coin) {
 
   def signTx(seedFile: String, txFile: String, passphrase: String) = {
     val priv = getMasterKey(seedFile, passphrase)
-    val mpk = toBitcoinLeaf(priv)
+    val mpk = toCoinLeaf(priv)
 
     val tx = parse(Source.fromFile(txFile).getLines().mkString)
     val sigs: Iterable[Signature] = for {
@@ -200,5 +200,4 @@ object Main {
       System.exit(-1)
     }
   }
-
 }
