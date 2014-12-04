@@ -105,6 +105,10 @@ object Bitcoin {
   val SigHashAll = 1
   
   def hashEqual(a: Hash, b: Hash) = ByteBuffer.wrap(a) == ByteBuffer.wrap(b)
+  def newHash() = {
+    val h: Hash = new Array(32)
+    h
+  }
   
   def toAddress(pub: ECPoint, prefix: Byte): String = {
     val sha = new SHA256Digest

@@ -42,7 +42,8 @@ class Main(coin: Coin) {
   }
   
   def sign(pub: ECPoint, secret: BigInt, hash: Bitcoin.Hash): Signature = {
-    val signer = new ECDSASigner
+    val kGen = new RFC6979KCalculator
+    val signer = new ECDSASigner(kGen)
 
     val params = new ECPrivateKeyParameters(secret.bigInteger, Bitcoin.ecDomain)
     signer.init(true, params)
