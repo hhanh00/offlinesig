@@ -180,17 +180,14 @@ case class Coin(val prefix: Byte) {
 }
 
 object Main {
-  def getCoin(name: String) = name match {
-    case "BTC" => Coin(0.toByte)
-    case "tBTC" => Coin(0x6F.toByte)
-    case "LTC" => Coin(0x30.toByte)
-    case "tLTC" => Coin(0x6F.toByte)
-    case "DOGE" => Coin(0x1E.toByte)
-    case "ANC" => Coin(0x17.toByte)
-  }
+  val coinPrefixes = Source.fromInputStream(Main.getClass.getResourceAsStream("/coins.txt")).getLines().map { line =>
+    val x = line.split(" ")
+    val Array(coin, prefix) = line.split(" ")
+    coin -> Coin(Hex.decode(prefix)(0))
+  }.toMap
 
   def main(args: Array[String]) {
-    val coin = getCoin(args(0))
+    val coin = coinPrefixes(args(0))
     val m = new Main(coin)
     val command = args.lift(1)
     command map {
