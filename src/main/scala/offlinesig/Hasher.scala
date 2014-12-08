@@ -4,14 +4,10 @@ import java.math.BigInteger
 import java.security.SecureRandom
 import java.util.Arrays
 
-import org.apache.commons.lang3.ArrayUtils
 import org.bouncycastle.crypto.digests.SHA256Digest
 import org.bouncycastle.crypto.macs.HMac
 import org.bouncycastle.crypto.params.KeyParameter
 import org.bouncycastle.crypto.signers.DSAKCalculator
-import org.bouncycastle.jce.ECNamedCurveTable
-import org.bouncycastle.jce.interfaces.ECPrivateKey
-import org.bouncycastle.util.encoders.Hex
 
 object Hasher {
   type Function = Array[Byte] => Array[Byte]

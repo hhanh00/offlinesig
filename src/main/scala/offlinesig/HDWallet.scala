@@ -1,5 +1,6 @@
 package offlinesig
 
+import scala.language.implicitConversions
 import java.nio.ByteBuffer
 import java.security.{KeyFactory, Security}
 import java.util.Arrays
@@ -97,6 +98,17 @@ object BIP32 {
 }
 
 object Bitcoin {
+  implicit def richBigInt(bi: BigInt) = new RichBigInt(bi)
+  class RichBigInt(bi: BigInt) {
+    def toUnsignedByteArray() = {
+      val r = bi.toByteArray
+      if (r(0) == 0)
+        ArrayUtils.subarray(r, 1, r.length)
+      else
+        r
+    }
+  }
+
   // val addressPrefix = 0x00.toByte
   type Hash = Array[Byte]
   type Script = Array[Byte]
@@ -137,9 +149,9 @@ object Bitcoin {
   }
   
   def toAddressFromHash(hash: Hash, prefix: Byte): String = {
-    val hashExt: Array[Byte] = new Array(21)
+    val hashExt: Array[Byte] = new Array(hash.length + 1)
     hashExt(0) = prefix
-    System.arraycopy(hash, 0, hashExt, 1, 20)
+    System.arraycopy(hash, 0, hashExt, 1, hash.length)
     val checksum = Arrays.copyOfRange(Hasher.dsha(hashExt), 0, 4)
     val addressBin = ArrayUtils.addAll(hashExt, checksum:_*)
     Base58.encode(addressBin)

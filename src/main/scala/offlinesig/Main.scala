@@ -2,6 +2,7 @@ package offlinesig
 
 import java.security.SecureRandom
 
+import org.apache.commons.lang3.ArrayUtils
 import org.bouncycastle.crypto.params.ECPrivateKeyParameters
 import org.bouncycastle.crypto.signers.ECDSASigner
 import org.bouncycastle.math.ec.ECPoint
@@ -10,6 +11,7 @@ import org.json4s.JsonAST.JObject
 import org.json4s.JsonDSL._
 import org.json4s._
 import org.json4s.native.JsonMethods._
+import Bitcoin._
 
 import scala.io.Source
 import scala.math.BigInt
@@ -143,6 +145,9 @@ class Main(coin: Coin) {
       val pubHash = Hex.decode(pubStr)
       val txHash = Hex.decode(hashStr)
       val priv = getSecret(pubHash, mpk)
+
+      val pkey = ArrayUtils.add(BigInt(priv.secret.getD()).toUnsignedByteArray, 1.toByte)
+      // println(Bitcoin.toAddressFromHash(pkey, 0x97.toByte))
       sign(priv.toPub(), priv.secret.getD(), txHash)
     }
     val sigsJson = sigs map { sig =>
@@ -181,6 +186,7 @@ object Main {
     case "LTC" => Coin(0x30.toByte)
     case "tLTC" => Coin(0x6F.toByte)
     case "DOGE" => Coin(0x1E.toByte)
+    case "ANC" => Coin(0x17.toByte)
   }
 
   def main(args: Array[String]) {
