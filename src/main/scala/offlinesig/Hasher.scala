@@ -25,18 +25,9 @@ object Hasher {
 
 /* Deterministic ECDSA */
 class RFC6979KCalculator extends DSAKCalculator {
+  import Bitcoin.richBigInt
   case class Generator(q: BigInt, x: BigInt, m: Array[Byte]) {
     val qLen = q.bigInteger.bitLength()
-
-    implicit def richBigInt(i: BigInt) = new {
-      def toUnsignedByteArray(): Array[Byte] = {
-        val x = i.toByteArray
-        if (x(0) == 0)
-          Arrays.copyOfRange(x, 1, x.length)
-        else
-          x
-      }
-    }
 
     def int2octets(x: BigInt, qLen: Int): Array[Byte] = {
       val xb = x.toUnsignedByteArray()
@@ -58,9 +49,9 @@ class RFC6979KCalculator extends DSAKCalculator {
 
     def bits2octet(b: Array[Byte], qLen: Int): Array[Byte] = {
       val c = bits2int(b, qLen)
-      (if (c > q)
+      int2octets(if (c > q)
         c - q
-      else c).toUnsignedByteArray()
+      else c, qLen)
     }
 
     def hmacAdd(hmac: HMac, b: Array[Byte]) = hmac.update(b, 0, b.length)
