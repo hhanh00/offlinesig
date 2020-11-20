@@ -14,6 +14,7 @@ import org.bouncycastle.jce.interfaces.ECPrivateKey
 import org.bouncycastle.jce.provider.BouncyCastleProvider
 import org.bouncycastle.jce.spec.ECPrivateKeySpec
 import org.bouncycastle.math.ec.ECPoint
+import org.bouncycastle.util.encoders.Hex
 
 import scala.util.{Failure, Success, Try}
 
@@ -114,6 +115,8 @@ object Bitcoin {
   type Script = Array[Byte]
   val ecSpec = ECNamedCurveTable.getParameterSpec("secp256k1")
   val ecDomain = new ECDomainParameters(ecSpec.getCurve, ecSpec.getG, ecSpec.getN)
+  val curveOrder = BigInt(ecSpec.getN)
+  val halfCurveOrder = BigInt(ecSpec.getN.shiftRight(1))
   val SigHashAll = 1
   
   def hashEqual(a: Hash, b: Hash) = ByteBuffer.wrap(a) == ByteBuffer.wrap(b)
@@ -194,6 +197,25 @@ class PrivKeyExt(val secret: ECPrivateKey, val chain: Array[Byte]) {
   
   def toPublic() = {
     new PublicKeyExt(toPub(), chain)
+  }
+
+  def toSerialized(): String = {
+    val bb = ByteBuffer.allocate(78)
+    bb.putInt(0x488ADE4)
+    bb.put(0.toByte)
+    bb.putInt(0)
+    bb.putInt(0)
+    bb.put(chain)
+    bb.put(0.toByte)
+    val sec = BIP32.getEncoded(secret.getD)
+    bb.put(sec)
+    val a = bb.array
+    val checksum = Arrays.copyOfRange(Hasher.dsha(a), 0, 4)
+    val bb2 = ByteBuffer.allocate(82)
+    bb2.put(bb.array)
+    bb2.put(checksum)
+    Base58.encode(bb2.array)
+    // Hex.toHexString(a)
   }
 }
 

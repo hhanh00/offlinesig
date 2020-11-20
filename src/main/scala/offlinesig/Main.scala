@@ -50,7 +50,11 @@ class Main(coin: Coin) {
     val params = new ECPrivateKeyParameters(secret.bigInteger, Bitcoin.ecDomain)
     signer.init(true, params)
     val sig = signer.generateSignature(hash)
-    Signature(pub, BigInt(sig(0)), BigInt(sig(1)))
+    val r = BigInt(sig(0))
+    var s = BigInt(sig(1))
+    if (s > Bitcoin.halfCurveOrder)
+      s = Bitcoin.curveOrder - s
+    Signature(pub, r, s)
   }
 
   def toCoinLeaf(priv: PrivKeyExt) = priv.toPrivChild(0x8000002C).toPrivChild(0x80000000 + coin.prefix).toPrivChild(0x80000000)
@@ -80,6 +84,12 @@ class Main(coin: Coin) {
     val mppkJson = ("pub" -> Hex.toHexString(BIP32.getCompressed(mppk.point))) ~
     ("chain" -> Hex.toHexString(mppk.chain))
     println(compact(render(mppkJson)))
+  }
+
+  def exportXPriv(seedFile: String, passphrase: String) = {
+    val priv = getMasterKey(seedFile, passphrase)
+    val privExt = toCoinLeaf(priv)
+    println(privExt.toSerialized())
   }
 
   def getMPK(mpkFile: String) = {
@@ -193,6 +203,7 @@ object Main {
     command map {
       case "sign" => m.signTx(args(2), args(3), args.lift(4) getOrElse "")
       case "mpk" => m.showMpk(args(2), args.lift(3) getOrElse "")
+      case "export" => m.exportXPriv(args(2), args.lift(3) getOrElse "")
       case "seed" => m.createNewSeed(args.lift(2))
       case "receive" => m.showAddresses(args(2), false, args(3).toInt)
       case "change" => m.showAddresses(args(2), true, args(3).toInt)
